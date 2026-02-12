@@ -1,13 +1,16 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
-import TimerUnit from './components/TimerUnit';
-import { TimeRemaining } from './types';
+import TimerUnit from './components/TimerUnit.tsx';
+import { TimeRemaining } from './types.ts';
 
 const TARGET_DATE = "2026-04-30T00:00:00";
 
 const App: React.FC = () => {
   const calculateTimeRemaining = useCallback((): TimeRemaining => {
-    const total = Date.parse(TARGET_DATE) - Date.parse(new Date().toString());
+    const target = new Date(TARGET_DATE).getTime();
+    const now = new Date().getTime();
+    const total = target - now;
+    
     const seconds = Math.max(0, Math.floor((total / 1000) % 60));
     const minutes = Math.max(0, Math.floor((total / 1000 / 60) % 60));
     const hours = Math.max(0, Math.floor((total / (1000 * 60 * 60)) % 24));
@@ -24,8 +27,7 @@ const App: React.FC = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [calculateTimeRemaining]);
 
   const isFinished = timeLeft.total <= 0;
 
