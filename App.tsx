@@ -5,18 +5,60 @@ import { TimeRemaining } from './types.ts';
 
 const TARGET_DATE = "2026-04-30T00:00:00";
 
+const HOLIDAYS_2026 = [
+  '2026-01-01', // Ano Novo
+  '2026-02-16', // Carnaval
+  '2026-02-17', // Carnaval
+  '2026-04-03', // Sexta-feira Santa
+  '2026-04-21', // Tiradentes
+];
+
+const calculateBusinessDays = (startDate: Date, endDate: Date): number => {
+  let count = 0;
+  const curDate = new Date(startDate.getTime());
+  curDate.setHours(0, 0, 0, 0);
+  
+  const targetDate = new Date(endDate.getTime());
+  targetDate.setHours(0, 0, 0, 0);
+
+  // Começamos a contar a partir do próximo dia
+  while (curDate < targetDate) {
+    curDate.setDate(curDate.getDate() + 1);
+    
+    if (curDate > targetDate) break;
+
+    const dayOfWeek = curDate.getDay();
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6; // 0 = Domingo, 6 = Sábado
+    
+    // Format YYYY-MM-DD manually to avoid timezone issues with toISOString
+    const y = curDate.getFullYear();
+    const m = String(curDate.getMonth() + 1).padStart(2, '0');
+    const d = String(curDate.getDate()).padStart(2, '0');
+    const dateString = `${y}-${m}-${d}`;
+    
+    const isHoliday = HOLIDAYS_2026.includes(dateString);
+
+    if (!isWeekend && !isHoliday) {
+      count++;
+    }
+  }
+  return count;
+};
+
 const App: React.FC = () => {
   const calculateTimeRemaining = useCallback((): TimeRemaining => {
-    const target = new Date(TARGET_DATE).getTime();
-    const now = new Date().getTime();
-    const total = target - now;
+    const target = new Date(TARGET_DATE);
+    const now = new Date();
+    const total = target.getTime() - now.getTime();
     
     const seconds = Math.max(0, Math.floor((total / 1000) % 60));
     const minutes = Math.max(0, Math.floor((total / 1000 / 60) % 60));
     const hours = Math.max(0, Math.floor((total / (1000 * 60 * 60)) % 24));
     const days = Math.max(0, Math.floor(total / (1000 * 60 * 60 * 24)));
+    const weeks = Math.max(0, Math.floor(days / 7));
+    const businessDays = Math.max(0, calculateBusinessDays(now, target));
 
-    return { total, days, hours, minutes, seconds };
+    return { total, days, weeks, businessDays, hours, minutes, seconds };
   }, []);
 
   const [timeLeft, setTimeLeft] = useState<TimeRemaining>(calculateTimeRemaining());
@@ -51,17 +93,24 @@ const App: React.FC = () => {
       </header>
 
       {/* Main Timer Display */}
-      <main className="z-10 flex flex-wrap justify-center gap-3 sm:gap-6 md:gap-8 px-4">
+      <main className="z-10 flex flex-col items-center gap-8 md:gap-12 px-4">
         {isFinished ? (
           <div className="text-center animate-bounce">
             <h2 className="text-6xl md:text-9xl font-black text-yellow-500 font-oswald glow-text">CHEGOU O DIA!</h2>
           </div>
         ) : (
           <>
-            <TimerUnit value={timeLeft.days} label="Dias" />
-            <TimerUnit value={timeLeft.hours} label="Horas" />
-            <TimerUnit value={timeLeft.minutes} label="Minutos" />
-            <TimerUnit value={timeLeft.seconds} label="Segundos" />
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-6 md:gap-8">
+              <TimerUnit value={timeLeft.days} label="Dias" />
+              <TimerUnit value={timeLeft.hours} label="Horas" />
+              <TimerUnit value={timeLeft.minutes} label="Minutos" />
+              <TimerUnit value={timeLeft.seconds} label="Segundos" />
+            </div>
+
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-6 md:gap-8 opacity-90 scale-90 sm:scale-95">
+              <TimerUnit value={timeLeft.weeks} label="Semanas" />
+              <TimerUnit value={timeLeft.businessDays} label="Dias Úteis" />
+            </div>
           </>
         )}
       </main>
