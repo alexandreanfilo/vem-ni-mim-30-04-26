@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import TimerUnit from './components/TimerUnit.tsx';
 import { TimeRemaining } from './types.ts';
+import { fetchHypeMessage } from './services/aiService.ts';
 
 const TARGET_DATE = "2026-04-30T00:00:00";
 
@@ -62,6 +63,32 @@ const App: React.FC = () => {
   }, []);
 
   const [timeLeft, setTimeLeft] = useState<TimeRemaining>(calculateTimeRemaining());
+  const [hypeMessage, setHypeMessage] = useState<string>("");
+  const [isLoadingHype, setIsLoadingHype] = useState(false);
+
+  useEffect(() => {
+    const getHype = async () => {
+      const today = new Date().toDateString();
+      const cached = localStorage.getItem('hype_message');
+      const cachedDate = localStorage.getItem('hype_date');
+
+      if (cached && cachedDate === today) {
+        setHypeMessage(cached);
+        return;
+      }
+
+      setIsLoadingHype(true);
+      const msg = await fetchHypeMessage(timeLeft.days);
+      setHypeMessage(msg);
+      localStorage.setItem('hype_message', msg);
+      localStorage.setItem('hype_date', today);
+      setIsLoadingHype(false);
+    };
+
+    if (timeLeft.total > 0) {
+      getHype();
+    }
+  }, [timeLeft.days, timeLeft.total]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -110,6 +137,26 @@ const App: React.FC = () => {
             <div className="flex flex-wrap justify-center gap-3 sm:gap-6 md:gap-8 opacity-90 scale-90 sm:scale-95">
               <TimerUnit value={timeLeft.weeks} label="Semanas" />
               <TimerUnit value={timeLeft.businessDays} label="Dias Úteis" />
+            </div>
+
+            {/* AI Hype Section */}
+            <div className="mt-4 md:mt-8 max-w-md mx-auto text-center px-6 py-4 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl transition-all duration-500 hover:bg-white/10">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-yellow-500"></span>
+                </span>
+                <p className="text-yellow-500 text-[10px] font-bold uppercase tracking-[0.2em]">
+                  Transmissão do Futuro
+                </p>
+              </div>
+              <p className="text-base md:text-lg font-medium text-gray-100 italic">
+                {isLoadingHype ? (
+                  <span className="opacity-50 animate-pulse">Sintonizando a frequência...</span>
+                ) : (
+                  hypeMessage ? `"${hypeMessage}"` : "O relógio não para! 🚀"
+                )}
+              </p>
             </div>
           </>
         )}
