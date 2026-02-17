@@ -68,27 +68,16 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const getHype = async () => {
-      const today = new Date().toDateString();
-      const cached = localStorage.getItem('hype_message');
-      const cachedDate = localStorage.getItem('hype_date');
-
-      if (cached && cachedDate === today) {
-        setHypeMessage(cached);
-        return;
-      }
-
       setIsLoadingHype(true);
       const msg = await fetchHypeMessage(timeLeft.days);
       setHypeMessage(msg);
-      localStorage.setItem('hype_message', msg);
-      localStorage.setItem('hype_date', today);
       setIsLoadingHype(false);
     };
 
-    if (timeLeft.total > 0) {
+    if (timeLeft.total > 0 && !hypeMessage) {
       getHype();
     }
-  }, [timeLeft.days, timeLeft.total]);
+  }, [timeLeft.days, timeLeft.total, hypeMessage]);
 
   useEffect(() => {
     const timer = setInterval(() => {
