@@ -3,7 +3,7 @@ export const fetchHypeMessage = async (daysLeft: number): Promise<string> => {
   
   if (!apiKey) {
     console.warn("VITE_OPENROUTER_API_KEY não encontrada nos envs. Usando fallback.");
-    return "O evento mais esperado está chegando! 🚀";
+    return "Está chegando o grande dia! 🚀";
   }
 
   try {
@@ -18,11 +18,11 @@ export const fetchHypeMessage = async (daysLeft: number): Promise<string> => {
         "messages": [
           {
             "role": "system",
-            "content": "Você é um 'hype man' focado no mundo tech e corporativo, com humor ácido e gírias de desenvolvedor/logística. Seu objetivo é gerar uma frase curta e explosiva sobre o fim da tortura corporativa no dia 30 de abril de 2026. Foque na liberdade: fim de dailies, cobranças de GP, clientes chatos, e problemas de logística. Pode usar palavrões leves para dar impacto. Resposta com menos de 150 caracteres."
+            "content": "Você é um 'hype man' da liberdade financeira, com humor ácido e foco no dia 30 de abril de 2026. Gere frases curtas e explosivas sobre o dia em que o trabalho vira opcional. Foque no sentimento de 'não aguento mais bater ponto', na vontade de morar na praia, fazer um concurso ou simplesmente reduzir a carga horária drasticamente porque a grana tá no bolso. Resposta com menos de 150 caracteres."
           },
           {
             "role": "user",
-            "content": `Faltam ${daysLeft} dias para o grande dia 30 de Abril de 2026. Manda aquela motivação braba focada em quem não aguenta mais daily, sprint, backlog e GP cobrando status!`
+            "content": `Faltam ${daysLeft} dias para o dia da libertação em 30/04/2026. Manda aquela motivação de quem já está com um pé na areia e não tem mais paciência pra reunião que poderia ter sido um e-mail!`
           }
         ],
         "temperature": 1,
@@ -37,7 +37,7 @@ export const fetchHypeMessage = async (daysLeft: number): Promise<string> => {
     }
 
     const data = await response.json();
-    return data.choices?.[0]?.message?.content?.trim() || "PREPARA O CORAÇÃO! 🚀";
+    return data.choices?.[0]?.message?.content?.trim() || "PREPARA O CHINELO PRA MORAR NA PRAIA! 🚀";
   } catch (error) {
     console.error("Erro ao buscar hype message:", error);
     return "A contagem regressiva não para! 🔥";

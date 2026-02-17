@@ -117,8 +117,18 @@ const App: React.FC = () => {
       {/* Main Timer Display */}
       <main className="z-10 flex flex-col items-center gap-8 md:gap-12 px-4">
         {isFinished ? (
-          <div className="text-center animate-bounce">
-            <h2 className="text-6xl md:text-9xl font-black text-yellow-500 font-oswald glow-text">CHEGOU O DIA!</h2>
+          <div className="text-center animate-bounce max-w-2xl px-6">
+            <h2 className="text-6xl md:text-8xl font-black text-yellow-500 font-oswald glow-text mb-4">LIBERDADE!</h2>
+            <p className="text-xl md:text-2xl font-bold text-white uppercase tracking-wider mb-8">
+              O dia da Independência Financeira chegou! 🚀
+            </p>
+            <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-yellow-500/20 shadow-2xl">
+              <p className="text-lg md:text-xl italic text-gray-200 leading-relaxed">
+                "Acabou a tortura! Agora vai ser difícil fingir motivação na daily, né? Já pode começar a pesquisar o CEP da praia, 
+                escolher o cursinho pro concurso ou simplesmente avisar que agora você só trabalha 'por esporte'. 
+                O boleto perdeu o poder, o mundo é seu e a carga horária é você quem manda!"
+              </p>
+            </div>
           </div>
         ) : (
           <>
