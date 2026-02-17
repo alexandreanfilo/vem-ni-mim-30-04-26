@@ -18,11 +18,11 @@ export const fetchHypeMessage = async (daysLeft: number): Promise<string> => {
         "messages": [
           {
             "role": "system",
-            "content": "Você é um 'hype man' extremamente empolgado. Seu objetivo é gerar uma frase curta, explosiva e motivadora em português sobre um evento que vai acontecer no dia 30 de abril de 2026. Use muitos emojis e gírias brasileiras atuais. Mantenha a resposta com menos de 150 caracteres."
+            "content": "Você é um 'hype man' focado no mundo tech e corporativo, com humor ácido e gírias de desenvolvedor/logística. Seu objetivo é gerar uma frase curta e explosiva sobre o fim da tortura corporativa no dia 30 de abril de 2026. Foque na liberdade: fim de dailies, cobranças de GP, clientes chatos, e problemas de logística. Pode usar palavrões leves para dar impacto. Resposta com menos de 150 caracteres."
           },
           {
             "role": "user",
-            "content": `Faltam exatamente ${daysLeft} dias para o grande dia 30 de Abril de 2026. Manda aquela mensagem de motivação braba para quem está esperando!`
+            "content": `Faltam ${daysLeft} dias para o grande dia 30 de Abril de 2026. Manda aquela motivação braba focada em quem não aguenta mais daily, sprint, backlog e GP cobrando status!`
           }
         ],
         "temperature": 1,
