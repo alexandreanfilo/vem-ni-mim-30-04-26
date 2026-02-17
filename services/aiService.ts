@@ -1,6 +1,8 @@
 export const fetchHypeMessage = async (daysLeft: number): Promise<string> => {
-  const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY;
+  const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY?.trim();
+  
   if (!apiKey) {
+    console.warn("VITE_OPENROUTER_API_KEY não encontrada nos envs. Usando fallback.");
     return "O evento mais esperado está chegando! 🚀";
   }
 
@@ -9,12 +11,10 @@ export const fetchHypeMessage = async (daysLeft: number): Promise<string> => {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${apiKey}`,
-        "HTTP-Referer": "https://vem-ni-mim-30-04.pages.dev",
-        "X-Title": "Vem Ni Mim Countdown",
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        "model": "google/gemini-2.0-flash-lite-preview-02-05:free",
+        "model": "google/gemini-2.0-flash-lite-001",
         "messages": [
           {
             "role": "system",
@@ -25,10 +25,16 @@ export const fetchHypeMessage = async (daysLeft: number): Promise<string> => {
             "content": `Faltam exatamente ${daysLeft} dias para o grande dia 30 de Abril de 2026. Manda aquela mensagem de motivação braba para quem está esperando!`
           }
         ],
-        "temperature": 0.9,
+        "temperature": 1,
         "max_tokens": 100
       })
     });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Erro OpenRouter:", errorData);
+      throw new Error(`OpenRouter API error: ${response.status}`);
+    }
 
     const data = await response.json();
     return data.choices?.[0]?.message?.content?.trim() || "PREPARA O CORAÇÃO! 🚀";

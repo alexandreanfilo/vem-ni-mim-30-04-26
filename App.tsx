@@ -69,15 +69,21 @@ const App: React.FC = () => {
   useEffect(() => {
     const getHype = async () => {
       setIsLoadingHype(true);
-      const msg = await fetchHypeMessage(timeLeft.days);
-      setHypeMessage(msg);
-      setIsLoadingHype(false);
+      try {
+        const msg = await fetchHypeMessage(timeLeft.days);
+        setHypeMessage(msg);
+      } catch (err) {
+        console.error("Erro ao carregar frase:", err);
+      } finally {
+        setIsLoadingHype(false);
+      }
     };
 
-    if (timeLeft.total > 0 && !hypeMessage) {
+    if (timeLeft.total > 0) {
       getHype();
     }
-  }, [timeLeft.days, timeLeft.total, hypeMessage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run once on mount
 
   useEffect(() => {
     const timer = setInterval(() => {
