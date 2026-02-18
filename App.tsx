@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import TimerUnit from './components/TimerUnit.tsx';
 import { TimeRemaining } from './types.ts';
-import { fetchHypeMessage } from './services/aiService.ts';
 
 const TARGET_DATE = "2026-04-30T00:00:00";
 
@@ -63,27 +62,6 @@ const App: React.FC = () => {
   }, []);
 
   const [timeLeft, setTimeLeft] = useState<TimeRemaining>(calculateTimeRemaining());
-  const [hypeMessage, setHypeMessage] = useState<string>("");
-  const [isLoadingHype, setIsLoadingHype] = useState(false);
-
-  useEffect(() => {
-    const getHype = async () => {
-      setIsLoadingHype(true);
-      try {
-        const msg = await fetchHypeMessage(timeLeft.days);
-        setHypeMessage(msg);
-      } catch (err) {
-        console.error("Erro ao carregar frase:", err);
-      } finally {
-        setIsLoadingHype(false);
-      }
-    };
-
-    if (timeLeft.total > 0) {
-      getHype();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Run once on mount
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -144,7 +122,7 @@ const App: React.FC = () => {
               <TimerUnit value={timeLeft.businessDays} label="Dias Úteis" />
             </div>
 
-            {/* AI Hype Section */}
+            {/* Hype Section */}
             <div className="mt-4 md:mt-8 max-w-md mx-auto text-center px-6 py-4 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl transition-all duration-500 hover:bg-white/10">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <span className="relative flex h-2 w-2">
@@ -156,11 +134,7 @@ const App: React.FC = () => {
                 </p>
               </div>
               <p className="text-base md:text-lg font-medium text-gray-100 italic">
-                {isLoadingHype ? (
-                  <span className="opacity-50 animate-pulse">Sintonizando a frequência...</span>
-                ) : (
-                  hypeMessage ? `"${hypeMessage}"` : "O relógio não para! 🚀"
-                )}
+                "A liberdade está chegando! O relógio não para e o boleto está com os dias contados. 🚀"
               </p>
             </div>
           </>
