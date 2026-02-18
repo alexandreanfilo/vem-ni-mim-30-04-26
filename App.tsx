@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import TimerUnit from './components/TimerUnit.tsx';
+import PrisonCalendar from './components/PrisonCalendar.tsx';
 import { TimeRemaining } from './types.ts';
 
 const TARGET_DATE = "2026-04-30T00:00:00";
@@ -74,13 +75,14 @@ const App: React.FC = () => {
   const isFinished = timeLeft.total <= 0;
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col items-center justify-center bg-[#0a0a0a] text-white overflow-hidden">
+    <div className="relative min-h-screen w-full bg-[#0a0a0a] text-white py-12 md:py-20 flex flex-col items-center">
       {/* Background decoration */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-yellow-600/10 rounded-full blur-[120px]" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-orange-600/10 rounded-full blur-[120px]" />
+      <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-yellow-600/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-orange-600/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="fixed inset-0 pointer-events-none opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')] z-0" />
 
       {/* Header */}
-      <header className="z-10 text-center mb-8 md:mb-12 px-4 animate-pulse-slow">
+      <header className="relative z-10 text-center mb-8 md:mb-12 px-4 animate-pulse-slow">
         <h2 className="text-yellow-500 font-bold tracking-[0.3em] uppercase text-sm md:text-base mb-2">
           Contagem Regressiva
         </h2>
@@ -122,21 +124,7 @@ const App: React.FC = () => {
               <TimerUnit value={timeLeft.businessDays} label="Dias Úteis" />
             </div>
 
-            {/* Hype Section */}
-            <div className="mt-4 md:mt-8 max-w-md mx-auto text-center px-6 py-4 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl transition-all duration-500 hover:bg-white/10">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-yellow-500"></span>
-                </span>
-                <p className="text-yellow-500 text-[10px] font-bold uppercase tracking-[0.2em]">
-                  Transmissão do Futuro
-                </p>
-              </div>
-              <p className="text-base md:text-lg font-medium text-gray-100 italic">
-                "A liberdade está chegando! O relógio não para e o boleto está com os dias contados. 🚀"
-              </p>
-            </div>
+            <PrisonCalendar targetDate={TARGET_DATE} />
           </>
         )}
       </main>
@@ -152,9 +140,6 @@ const App: React.FC = () => {
           Prepare-se para o evento mais esperado da década. O relógio não para.
         </p>
       </footer>
-
-      {/* Background noise texture */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')]" />
     </div>
   );
 };
